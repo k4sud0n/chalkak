@@ -1,0 +1,63 @@
+<div class="absolute inset-0 flex flex-col justify-center items-center bg-white p-4">
+    <video autoplay class="h-auto max-w-lg" controls crossorigin="anonymous" id="video" muted>
+        <source src="https://strm2.spatic.go.kr/live/{{code}}.stream/playlist.m3u8" type="application/x-mpegURL">
+    </video>
+
+    <div class="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-full cursor-pointer"
+         onclick="closeOverlay()" title="닫기">
+        X
+    </div>
+
+    <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" id="capture-btn"
+            onclick="captureVideo()">
+        사진 찍기
+    </button>
+
+    <div class="mt-10 max-w-lg hidden" id="capture-result">
+        <div class="font-semibold">찍힌 사진</div>
+        <img alt="캡처된 이미지" class="w-full h-auto" id="captured-image">
+    </div>
+</div>
+
+<script>
+    // 오버레이 닫기 함수
+    function closeOverlay() {
+        document.getElementById('overlay-container').innerHTML = '';
+    }
+
+    // 비디오 캡처 함수
+    function captureVideo() {
+        var video = document.getElementById('video');
+        if (!video || !video.videoWidth || !video.videoHeight) {
+            alert('영상을 먼저 재생해주세요!');
+            return;
+        }
+
+        var canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        // canvas에 현재 비디오 프레임 그리기
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // canvas를 이미지로 변환
+        var image = canvas.toDataURL('image/png');
+
+        // 파일 이름을 현재 시간으로 설정
+        var timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        var filename = 'capture-' + timestamp + '.png';
+
+        // 이미지 다운로드
+        var link = document.createElement('a');
+        link.href = image;
+        link.download = filename;
+        link.click();
+
+        // 캡처 결과 표시
+        var captureResult = document.getElementById('capture-result');
+        var capturedImage = document.getElementById('captured-image');
+        capturedImage.src = image;
+        captureResult.classList.remove('hidden');
+    }
+</script>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>찰칵!</title>
+    <script src="https://unpkg.com/htmx.org"></script>
+    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=433676c5c88211541857d922a71b7eee"
+            type="text/javascript"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex flex-col justify-center items-center bg-gray-100 h-screen">
+<!-- 지도 컨테이너 (위 절반) -->
+<div class="w-full h-1/2" id="map"></div>
+
+<!-- 오버레이 컨테이너 (아래 절반) -->
+<div class="w-full h-1/2 relative" id="overlay-container"></div>
+
+<script>
+    // 지도 초기화
+    var mapContainer = document.getElementById('map');
+    var mapOption = {
+        center: new kakao.maps.LatLng(37.486738815629764, 127.07573968468549),
+        level: 3
+    };
+    var map = new kakao.maps.Map(mapContainer, mapOption);
+
+    // 마커 추가
+    var marker = new kakao.maps.Marker({
+        map: map,
+        position: new kakao.maps.LatLng(37.48652936945308, 127.07568011186146)
+    });
+
+    // 마커 클릭 시 HTMX로 오버레이 로드
+    kakao.maps.event.addListener(marker, 'click', function () {
+        htmx.ajax('GET', '/location/irwon-tunnel', {target: '#overlay-container', swap: 'innerHTML'});
+    });
+
+    // 창 크기 변경 시 지도 크기 조정
+    window.addEventListener('resize', function () {
+        map.relayout();
+    });
+</script>
+</body>
+</html>

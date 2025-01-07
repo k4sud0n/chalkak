@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "chalkak"
+version = "0.1.0"
+description = ""
+authors = ["Sihyun Kim <k4sud0n@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+fastapi = {extras = ["standard"], version = "^0.115.6"}
+uvicorn = "^0.34.0"
+black = "^24.10.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
