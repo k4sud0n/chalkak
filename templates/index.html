@@ -24,15 +24,36 @@
     };
     var map = new kakao.maps.Map(mapContainer, mapOption);
 
-    // 마커 추가
-    var marker = new kakao.maps.Marker({
-        map: map,
-        position: new kakao.maps.LatLng(37.48652936945308, 127.07568011186146)
-    });
+    // 마커 정보 배열
+    var markers = [
+        {
+            position: new kakao.maps.LatLng(37.48652936945308, 127.07568011186146),
+            header_url_code: "2",
+            location_code: "238",
+            name: "일원터널"
+        },
+        {
+            position: new kakao.maps.LatLng(37.49083250501735, 127.10418802584692),
+            header_url_code: "4",
+            location_code: "525",
+            name: "수서초등학교"
+        }
+    ];
 
-    // 마커 클릭 시 HTMX로 오버레이 로드
-    kakao.maps.event.addListener(marker, 'click', function () {
-        htmx.ajax('GET', '/location/irwon-tunnel', {target: '#overlay-container', swap: 'innerHTML'});
+    // 마커 생성 및 이벤트 리스너 추가
+    markers.forEach(function (markerInfo) {
+        var marker = new kakao.maps.Marker({
+            map: map,
+            position: markerInfo.position
+        });
+
+        // 마커 클릭 시 HTMX로 오버레이 로드
+        kakao.maps.event.addListener(marker, 'click', function () {
+            htmx.ajax('GET', `/location/${markerInfo.header_url_code}/${markerInfo.location_code}`, {
+                target: '#overlay-container',
+                swap: 'innerHTML'
+            });
+        });
     });
 
     // 창 크기 변경 시 지도 크기 조정
